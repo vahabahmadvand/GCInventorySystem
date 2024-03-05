@@ -5,11 +5,10 @@
 #include "CoreMinimal.h"
 
 /**
- * 
+ *
  */
 class GCINVENTORYSYSTEM_API InventoryTypes
 {
 public:
 	InventoryTypes();
-	~InventoryTypes();
 };

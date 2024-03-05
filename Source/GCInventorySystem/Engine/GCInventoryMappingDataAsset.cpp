@@ -1,7 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "InventoryTypes.h"
 
-InventoryTypes::InventoryTypes()
-{
-}
+#include "GCInventoryMappingDataAsset.h"
+
