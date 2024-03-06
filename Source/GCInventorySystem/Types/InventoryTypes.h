@@ -2,11 +2,22 @@
 
 #pragma once
 
-/**
- *
- */
-class GCINVENTORYSYSTEM_API InventoryTypes
+#include <GameplayTagContainer.h>
+#include "InventoryTypes.generated.h"
+
+USTRUCT(BlueprintType)
+struct FItemKeyInfo
 {
-public:
-	InventoryTypes();
+	GENERATED_BODY()
+
+	FItemKeyInfo() {}
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
+	FName ItemName;
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
+	FGameplayTag ItemTag;
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
+	FGameplayTag ItemCategoryTag;
 };

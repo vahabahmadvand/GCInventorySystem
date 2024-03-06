@@ -29,7 +29,8 @@ public class GCInventorySystem : ModuleRules
 			new string[]
 			{
 				"Core",
-                "ModularGameplay"
+                "ModularGameplay",
+                "StructUtils"
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);

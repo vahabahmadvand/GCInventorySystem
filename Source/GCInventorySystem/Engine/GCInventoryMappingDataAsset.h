@@ -15,14 +15,12 @@ class GCINVENTORYSYSTEM_API UGCInventoryMappingDataAsset : public UPrimaryDataAs
 {
 	GENERATED_BODY()
 
-protected:
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	TMap<FGameplayTag, UDataTable*> ItemsCategoryMap;
-
 public:
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	UDataTable* FindItemsDataTable(const FGameplayTag& categoryTag) const;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TMap<FGameplayTag, UDataTable*> ItemsCategoryMap;
 	
 };
