@@ -7,6 +7,7 @@
 #include <GameFramework/PlayerState.h>
 #include <InstancedStruct.h>
 #include <Kismet/DataTableFunctionLibrary.h>
+#include <Engine/DataTable.h>
 
 UGCInventoryGISSubsystems::UGCInventoryGISSubsystems()
 {
@@ -44,6 +45,25 @@ void UGCInventoryGISSubsystems::ItemAddedToInventory(FGameplayTag itemTag, APlay
 {
 	if (playerReference && playerReference->GetClass()->ImplementsInterface(UGCInventoryInterface::StaticClass()))
 	{
+		const auto addedItemInfo = GetItemInformationFromTag(itemTag);
+
+		if (const auto& dataAsset = ItemsDataAsset.LoadSynchronous())
+		{
+			if (const auto itemCategory = dataAsset->FindItemsDataTable(addedItemInfo.ItemCategoryTag))
+			{
+				FTableRowBase outRow;
+				UDataTableFunctionLibrary::GetDataTableRowFromName(itemCategory, FName(*itemTag.ToString()), outRow);
+				IGCInventoryInterface::Execute_ItemGranted(playerReference, outRow);
+			}
+			else
+			{
+				UE_LOG(LogInventorySystem, Error, TEXT("[%s] Failed to find ItemsDataAsset. Cannot fill the item information."), ANSI_TO_TCHAR(__FUNCTION__));
+			}
+		}
+		else
+		{
+			UE_LOG(LogInventorySystem, Error, TEXT("[%s] Failed to find ItemsDataAsset. Cannot fill the item information."), ANSI_TO_TCHAR(__FUNCTION__));
+		}
 	}
 }
 
