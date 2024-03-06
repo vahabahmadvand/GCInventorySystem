@@ -2,8 +2,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "Engine/DataAsset.h"
+#include <Engine/DataAsset.h>
+#include <GameplayTagContainer.h>
+
 #include "GCInventoryMappingDataAsset.generated.h"
 
 /**
@@ -13,5 +14,15 @@ UCLASS()
 class GCINVENTORYSYSTEM_API UGCInventoryMappingDataAsset : public UPrimaryDataAsset
 {
 	GENERATED_BODY()
+
+protected:
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TMap<FGameplayTag, UDataTable*> ItemsCategoryMap;
+
+public:
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	UDataTable* FindItemsDataTable(const FGameplayTag& categoryTag) const;
 	
 };

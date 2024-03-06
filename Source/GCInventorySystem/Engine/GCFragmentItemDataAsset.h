@@ -2,16 +2,25 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
+#include "GameplayTags.h"
 #include "GCFragmentItemDataAsset.generated.h"
 
 /**
  * 
  */
-UCLASS()
+UCLASS(BlueprintType)
 class GCINVENTORYSYSTEM_API UGCFragmentItemDataAsset : public UDataAsset
 {
 	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly)
+	TMap<FGameplayTag, TSoftObjectPtr<UScriptStruct>> TagStructMap;
+
+public:
+
+	bool IsStructTypeSupported(FGameplayTag structTag);
+
+	UScriptStruct* GetStructType(FGameplayTag structTag);
 	
 };

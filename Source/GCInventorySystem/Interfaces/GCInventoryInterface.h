@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "UObject/Interface.h"
 #include "GCInventoryInterface.generated.h"
 
@@ -14,7 +13,7 @@ class UGCInventoryInterface : public UInterface
 };
 
 /**
- * 
+ *
  */
 class GCINVENTORYSYSTEM_API IGCInventoryInterface
 {
