@@ -41,7 +41,7 @@ void UGCInventoryGISSubsystems::Deinitialize()
 	Super::Deinitialize();
 }
 
-void UGCInventoryGISSubsystems::ItemAddedToInventory(FGameplayTag itemTag, APlayerState* playerReference)
+void UGCInventoryGISSubsystems::ItemAddedToInventory(FGameplayTag itemTag, float itemStack, APlayerState* playerReference)
 {
 	if (playerReference && playerReference->GetClass()->ImplementsInterface(UGCInventoryInterface::StaticClass()))
 	{
@@ -53,7 +53,85 @@ void UGCInventoryGISSubsystems::ItemAddedToInventory(FGameplayTag itemTag, APlay
 			{
 				FTableRowBase outRow;
 				UDataTableFunctionLibrary::GetDataTableRowFromName(itemCategory, FName(*itemTag.ToString()), outRow);
-				IGCInventoryInterface::Execute_ItemGranted(playerReference, outRow);
+				IGCInventoryInterface::Execute_ItemGranted(playerReference, outRow, itemStack);
+			}
+			else
+			{
+				UE_LOG(LogInventorySystem, Error, TEXT("[%s] Failed to find ItemsDataAsset. Cannot fill the item information."), ANSI_TO_TCHAR(__FUNCTION__));
+			}
+		}
+		else
+		{
+			UE_LOG(LogInventorySystem, Error, TEXT("[%s] Failed to find ItemsDataAsset. Cannot fill the item information."), ANSI_TO_TCHAR(__FUNCTION__));
+		}
+	}
+}
+
+void UGCInventoryGISSubsystems::ItemUsedFromInventory(FGameplayTag itemTag, float itemStack, APlayerState* playerReference)
+{
+	if (playerReference && playerReference->GetClass()->ImplementsInterface(UGCInventoryInterface::StaticClass()))
+	{
+		const auto usedItemInfo = GetItemInformationFromTag(itemTag);
+
+		if (const auto& dataAsset = ItemsDataAsset.LoadSynchronous())
+		{
+			if (const auto itemCategory = dataAsset->FindItemsDataTable(usedItemInfo.ItemCategoryTag))
+			{
+				FTableRowBase outRow;
+				UDataTableFunctionLibrary::GetDataTableRowFromName(itemCategory, FName(*itemTag.ToString()), outRow);
+				IGCInventoryInterface::Execute_ItemUsed(playerReference, outRow, itemStack);
+			}
+			else
+			{
+				UE_LOG(LogInventorySystem, Error, TEXT("[%s] Failed to find ItemsDataAsset. Cannot fill the item information."), ANSI_TO_TCHAR(__FUNCTION__));
+			}
+		}
+		else
+		{
+			UE_LOG(LogInventorySystem, Error, TEXT("[%s] Failed to find ItemsDataAsset. Cannot fill the item information."), ANSI_TO_TCHAR(__FUNCTION__));
+		}
+	}
+}
+
+void UGCInventoryGISSubsystems::ItemDroppedFromInventory(FGameplayTag itemTag, float itemStack, APlayerState* playerReference)
+{
+	if (playerReference && playerReference->GetClass()->ImplementsInterface(UGCInventoryInterface::StaticClass()))
+	{
+		const auto usedItemInfo = GetItemInformationFromTag(itemTag);
+
+		if (const auto& dataAsset = ItemsDataAsset.LoadSynchronous())
+		{
+			if (const auto itemCategory = dataAsset->FindItemsDataTable(usedItemInfo.ItemCategoryTag))
+			{
+				FTableRowBase outRow;
+				UDataTableFunctionLibrary::GetDataTableRowFromName(itemCategory, FName(*itemTag.ToString()), outRow);
+				IGCInventoryInterface::Execute_ItemDropped(playerReference, outRow, itemStack);
+			}
+			else
+			{
+				UE_LOG(LogInventorySystem, Error, TEXT("[%s] Failed to find ItemsDataAsset. Cannot fill the item information."), ANSI_TO_TCHAR(__FUNCTION__));
+			}
+		}
+		else
+		{
+			UE_LOG(LogInventorySystem, Error, TEXT("[%s] Failed to find ItemsDataAsset. Cannot fill the item information."), ANSI_TO_TCHAR(__FUNCTION__));
+		}
+	}
+}
+
+void UGCInventoryGISSubsystems::ItemRemovedFromInventory(FGameplayTag itemTag, float itemStack, APlayerState* playerReference)
+{
+	if (playerReference && playerReference->GetClass()->ImplementsInterface(UGCInventoryInterface::StaticClass()))
+	{
+		const auto usedItemInfo = GetItemInformationFromTag(itemTag);
+
+		if (const auto& dataAsset = ItemsDataAsset.LoadSynchronous())
+		{
+			if (const auto itemCategory = dataAsset->FindItemsDataTable(usedItemInfo.ItemCategoryTag))
+			{
+				FTableRowBase outRow;
+				UDataTableFunctionLibrary::GetDataTableRowFromName(itemCategory, FName(*itemTag.ToString()), outRow);
+				IGCInventoryInterface::Execute_ItemRemoved(playerReference, outRow, itemStack);
 			}
 			else
 			{

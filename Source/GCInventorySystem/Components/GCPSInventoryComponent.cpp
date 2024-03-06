@@ -7,13 +7,14 @@
 
 UGCPSInventoryComponent::UGCPSInventoryComponent(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
-	HeldItemTags.Reset();
+	HeldItemTags = FGameplayTagStackContainer();
 
 	SetIsReplicatedByDefault(true);
 }
 
 void UGCPSInventoryComponent::BeginPlay()
 {
+	Super::BeginPlay();
 }
 
 void UGCPSInventoryComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -23,27 +24,75 @@ void UGCPSInventoryComponent::GetLifetimeReplicatedProps(TArray<FLifetimePropert
 	DOREPLIFETIME(ThisClass, HeldItemTags);
 }
 
-void UGCPSInventoryComponent::AddItemToInventory(FGameplayTag itemTag)
+void UGCPSInventoryComponent::AddItemToInventory(FGameplayTag itemTag, float itemStack)
 {
 	const auto ownerPlayer = GetPlayerState<APlayerState>();
 
-	HeldItemTags.AddTag(itemTag);
-	OnItemGranted.Broadcast(itemTag, ownerPlayer);
+	HeldItemTags.AddStack(itemTag, itemStack);
 
 	if (auto inventorySubsystem = UGCInventoryGISSubsystems::Get(ownerPlayer))
 	{
-		inventorySubsystem->ItemAddedToInventory(itemTag, ownerPlayer);
+		inventorySubsystem->ItemAddedToInventory(itemTag, itemStack, ownerPlayer);
+	}
+
+	OnItemGranted.Broadcast(itemTag, ownerPlayer);
+}
+
+void UGCPSInventoryComponent::UseItemFromInventory(FGameplayTag itemTag, float itemStack)
+{
+	const auto ownerPlayer = GetPlayerState<APlayerState>();
+
+	if (IsItemInInventory(itemTag))
+	{
+		if (auto inventorySubsystem = UGCInventoryGISSubsystems::Get(ownerPlayer))
+		{
+			inventorySubsystem->ItemUsedFromInventory(itemTag, itemStack, ownerPlayer);
+		}
+
+		OnItemUsed.Broadcast(itemTag, ownerPlayer);
 	}
 }
 
-void UGCPSInventoryComponent::UseItemFromInventory(FGameplayTag itemTag)
+void UGCPSInventoryComponent::DropItemFromInventory(FGameplayTag itemTag, float itemStack)
 {
+	const auto ownerPlayer = GetPlayerState<APlayerState>();
+
+	if (IsItemInInventory(itemTag))
+	{
+		HeldItemTags.RemoveStack(itemTag, itemStack);
+
+		if (auto inventorySubsystem = UGCInventoryGISSubsystems::Get(ownerPlayer))
+		{
+			inventorySubsystem->ItemDroppedFromInventory(itemTag, itemStack, ownerPlayer);
+		}
+
+		OnItemRemoved.Broadcast(itemTag, ownerPlayer);
+	}
 }
 
-void UGCPSInventoryComponent::RemoveItemFromInventory(FGameplayTag itemTag)
+void UGCPSInventoryComponent::RemoveItemFromInventory(FGameplayTag itemTag, float itemStack)
 {
+	const auto ownerPlayer = GetPlayerState<APlayerState>();
+
+	if (IsItemInInventory(itemTag))
+	{
+		HeldItemTags.RemoveStack(itemTag, itemStack);
+
+		if (auto inventorySubsystem = UGCInventoryGISSubsystems::Get(ownerPlayer))
+		{
+			inventorySubsystem->ItemRemovedFromInventory(itemTag, itemStack, ownerPlayer);
+		}
+
+		OnItemRemoved.Broadcast(itemTag, ownerPlayer);
+	}
 }
 
-void UGCPSInventoryComponent::DropItemFromInventory(FGameplayTag itemTag)
+bool UGCPSInventoryComponent::IsItemInInventory(FGameplayTag itemTag) const
 {
+	return HeldItemTags.ContainsTag(itemTag);
+}
+
+float UGCPSInventoryComponent::GetItemStack(FGameplayTag itemTag) const
+{
+	return HeldItemTags.GetStackCount(itemTag);
 }

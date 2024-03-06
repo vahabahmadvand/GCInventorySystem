@@ -43,7 +43,8 @@ public class GCInventorySystem : ModuleRules
 				"Engine",
 				"Slate",
 				"SlateCore",
-                "GameplayTags"
+                "GameplayTags",
+                "NetCore"
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);

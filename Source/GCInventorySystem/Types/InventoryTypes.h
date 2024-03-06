@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include <GameplayTagContainer.h>
+#include "System/GameplayTagStack.h"
 #include "InventoryTypes.generated.h"
 
 USTRUCT(BlueprintType)

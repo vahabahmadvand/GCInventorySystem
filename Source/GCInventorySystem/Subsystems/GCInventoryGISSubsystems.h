@@ -29,10 +29,19 @@ public:
 	virtual void Deinitialize() override;
 
 	UFUNCTION(BlueprintCallable, Category = InventorySubsystem)
-	void ItemAddedToInventory(FGameplayTag itemTag, APlayerState* playerReference);
+	FItemKeyInfo GetItemInformationFromTag(FGameplayTag itemTag);
 
 	UFUNCTION(BlueprintCallable, Category = InventorySubsystem)
-	FItemKeyInfo GetItemInformationFromTag(FGameplayTag itemTag);
+	void ItemAddedToInventory(FGameplayTag itemTag, float itemStack, APlayerState* playerReference);
+
+	UFUNCTION(BlueprintCallable, Category = InventorySubsystem)
+	void ItemUsedFromInventory(FGameplayTag itemTag, float itemStack, APlayerState* playerReference);
+
+	UFUNCTION(BlueprintCallable, Category = InventorySubsystem)
+	void ItemDroppedFromInventory(FGameplayTag itemTag, float itemStack, APlayerState* playerReference);
+
+	UFUNCTION(BlueprintCallable, Category = InventorySubsystem)
+	void ItemRemovedFromInventory(FGameplayTag itemTag, float itemStack, APlayerState* playerReference);
 
 protected:
 
