@@ -46,4 +46,7 @@
 - Finally, once you defined all your recipes, you can execute the method **CraftItem** in the **GCInventoryActorComponent**. This method will take as input an item tag, and it'll check if you possess the required items for the recipe. And if you do, the materials will be removed from your inventory and the crafted item will be added to your inventory.
 
 That's all for now. I hope it works for you all and good luck.
-PD. If this crash your game, you were warned in the beginning ¯\_(ツ)_/¯.
+PD. If this crashes your game, you were warned in the beginning 
+ ```
+¯\_(ツ)_/¯
+```
