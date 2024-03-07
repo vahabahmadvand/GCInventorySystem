@@ -41,9 +41,9 @@ void UGCInventoryGISSubsystems::Deinitialize()
 	Super::Deinitialize();
 }
 
-void UGCInventoryGISSubsystems::ItemAddedToInventory(FGameplayTag itemTag, float itemStack, APlayerState* playerReference)
+void UGCInventoryGISSubsystems::ItemAddedToInventory(FGameplayTag itemTag, float itemStack, AActor* ownerReference)
 {
-	if (playerReference && playerReference->GetClass()->ImplementsInterface(UGCInventoryInterface::StaticClass()))
+	if (ownerReference && ownerReference->GetClass()->ImplementsInterface(UGCInventoryInterface::StaticClass()))
 	{
 		const auto addedItemInfo = GetItemInformationFromTag(itemTag);
 
@@ -53,7 +53,7 @@ void UGCInventoryGISSubsystems::ItemAddedToInventory(FGameplayTag itemTag, float
 			{
 				FTableRowBase outRow;
 				UDataTableFunctionLibrary::GetDataTableRowFromName(itemCategory, FName(*itemTag.ToString()), outRow);
-				IGCInventoryInterface::Execute_ItemGranted(playerReference, outRow, itemStack);
+				IGCInventoryInterface::Execute_ItemGranted(ownerReference, outRow, itemStack);
 			}
 			else
 			{
@@ -67,9 +67,9 @@ void UGCInventoryGISSubsystems::ItemAddedToInventory(FGameplayTag itemTag, float
 	}
 }
 
-void UGCInventoryGISSubsystems::ItemUsedFromInventory(FGameplayTag itemTag, float itemStack, APlayerState* playerReference)
+void UGCInventoryGISSubsystems::ItemUsedFromInventory(FGameplayTag itemTag, float itemStack, AActor* ownerReference)
 {
-	if (playerReference && playerReference->GetClass()->ImplementsInterface(UGCInventoryInterface::StaticClass()))
+	if (ownerReference && ownerReference->GetClass()->ImplementsInterface(UGCInventoryInterface::StaticClass()))
 	{
 		const auto usedItemInfo = GetItemInformationFromTag(itemTag);
 
@@ -79,7 +79,7 @@ void UGCInventoryGISSubsystems::ItemUsedFromInventory(FGameplayTag itemTag, floa
 			{
 				FTableRowBase outRow;
 				UDataTableFunctionLibrary::GetDataTableRowFromName(itemCategory, FName(*itemTag.ToString()), outRow);
-				IGCInventoryInterface::Execute_ItemUsed(playerReference, outRow, itemStack);
+				IGCInventoryInterface::Execute_ItemUsed(ownerReference, outRow, itemStack);
 			}
 			else
 			{
@@ -93,9 +93,9 @@ void UGCInventoryGISSubsystems::ItemUsedFromInventory(FGameplayTag itemTag, floa
 	}
 }
 
-void UGCInventoryGISSubsystems::ItemDroppedFromInventory(FGameplayTag itemTag, float itemStack, APlayerState* playerReference)
+void UGCInventoryGISSubsystems::ItemDroppedFromInventory(FGameplayTag itemTag, float itemStack, AActor* ownerReference)
 {
-	if (playerReference && playerReference->GetClass()->ImplementsInterface(UGCInventoryInterface::StaticClass()))
+	if (ownerReference && ownerReference->GetClass()->ImplementsInterface(UGCInventoryInterface::StaticClass()))
 	{
 		const auto usedItemInfo = GetItemInformationFromTag(itemTag);
 
@@ -105,7 +105,7 @@ void UGCInventoryGISSubsystems::ItemDroppedFromInventory(FGameplayTag itemTag, f
 			{
 				FTableRowBase outRow;
 				UDataTableFunctionLibrary::GetDataTableRowFromName(itemCategory, FName(*itemTag.ToString()), outRow);
-				IGCInventoryInterface::Execute_ItemDropped(playerReference, outRow, itemStack);
+				IGCInventoryInterface::Execute_ItemDropped(ownerReference, outRow, itemStack);
 			}
 			else
 			{
@@ -119,9 +119,9 @@ void UGCInventoryGISSubsystems::ItemDroppedFromInventory(FGameplayTag itemTag, f
 	}
 }
 
-void UGCInventoryGISSubsystems::ItemRemovedFromInventory(FGameplayTag itemTag, float itemStack, APlayerState* playerReference)
+void UGCInventoryGISSubsystems::ItemRemovedFromInventory(FGameplayTag itemTag, float itemStack, AActor* ownerReference)
 {
-	if (playerReference && playerReference->GetClass()->ImplementsInterface(UGCInventoryInterface::StaticClass()))
+	if (ownerReference && ownerReference->GetClass()->ImplementsInterface(UGCInventoryInterface::StaticClass()))
 	{
 		const auto usedItemInfo = GetItemInformationFromTag(itemTag);
 
@@ -131,7 +131,7 @@ void UGCInventoryGISSubsystems::ItemRemovedFromInventory(FGameplayTag itemTag, f
 			{
 				FTableRowBase outRow;
 				UDataTableFunctionLibrary::GetDataTableRowFromName(itemCategory, FName(*itemTag.ToString()), outRow);
-				IGCInventoryInterface::Execute_ItemRemoved(playerReference, outRow, itemStack);
+				IGCInventoryInterface::Execute_ItemRemoved(ownerReference, outRow, itemStack);
 			}
 			else
 			{

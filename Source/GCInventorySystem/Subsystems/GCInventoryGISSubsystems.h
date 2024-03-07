@@ -32,16 +32,16 @@ public:
 	FItemKeyInfo GetItemInformationFromTag(FGameplayTag itemTag);
 
 	UFUNCTION(BlueprintCallable, Category = InventorySubsystem)
-	void ItemAddedToInventory(FGameplayTag itemTag, float itemStack, APlayerState* playerReference);
+	void ItemAddedToInventory(FGameplayTag itemTag, float itemStack, AActor* ownerReference);
 
 	UFUNCTION(BlueprintCallable, Category = InventorySubsystem)
-	void ItemUsedFromInventory(FGameplayTag itemTag, float itemStack, APlayerState* playerReference);
+	void ItemUsedFromInventory(FGameplayTag itemTag, float itemStack, AActor* ownerReference);
 
 	UFUNCTION(BlueprintCallable, Category = InventorySubsystem)
-	void ItemDroppedFromInventory(FGameplayTag itemTag, float itemStack, APlayerState* playerReference);
+	void ItemDroppedFromInventory(FGameplayTag itemTag, float itemStack, AActor* ownerReference);
 
 	UFUNCTION(BlueprintCallable, Category = InventorySubsystem)
-	void ItemRemovedFromInventory(FGameplayTag itemTag, float itemStack, APlayerState* playerReference);
+	void ItemRemovedFromInventory(FGameplayTag itemTag, float itemStack, AActor* ownerReference);
 
 protected:
 
