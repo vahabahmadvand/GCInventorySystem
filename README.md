@@ -12,6 +12,6 @@
  - To set up your inventory data asset you must add these lines inside your DefaultGame.ini. Keep in mind that **StructDataAsset=** asks for the path of the data asset file.
    ```
    [/Script/GCInventorySystem.GCInventoryGISSubsystems]
-   StructDataAsset=/Game/DT_InventoryDataAsset.DT_InventoryDataAsset
+   StructDataAsset=/Game/DT_InventoryDataAsset.DT_InventoryDataAsset (***example path***)
    ```
  - The idea is that the items could be as generic as possible. But there are a couple of restrictions to keep in mind
