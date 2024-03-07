@@ -9,5 +9,9 @@
  - Every actor holding an inventory should implement the **GCInventoryInterface** interface class and have a **GCInventoryActorComponent** as a component for the actor.
  - All the items used in the game should be defined in a data asset that inherits from **UGCInventoryMappingDataAsset**. Here there are two possible maps. One defines all the items in the game separated by categories and the other map holds the recipes for the items that you wish to craft.
  - The ItemsCategoryMap in the **UGCInventoryMappingDataAsset** is a map that holds the reference to all the items in the game. They're separated by category so you can separate your items in different categories for easier management. Each category holds a data table that could be any struct that inherits from **FTableRowBase**.
- - 
+ - To set up your inventory data asset you must add these lines inside your DefaultGame.ini. Keep in mind that **StructDataAsset=** asks for the path of the data asset file.
+   ```
+   [/Script/GCInventorySystem.GCInventoryGISSubsystems]
+   StructDataAsset=/Game/DT_InventoryDataAsset.DT_InventoryDataAsset
+   ```
  - The idea is that the items could be as generic as possible. But there are a couple of restrictions to keep in mind
