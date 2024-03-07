@@ -20,7 +20,7 @@ void UGCActorInventoryComponent::BeginPlay()
 
 	if (StartUpItems.Num() > 0)
 	{
-		for (const auto currentItem : StartUpItems)
+		for (const auto& currentItem : StartUpItems)
 		{
 			AddItemToInventory(currentItem.Key, currentItem.Value);
 		}
@@ -86,7 +86,7 @@ void UGCActorInventoryComponent::DropAllItemsFromInventory()
 
 	if (heldItems.Num() > 0)
 	{
-		for (const auto itemStack : heldItems)
+		for (const auto& itemStack : heldItems)
 		{
 			DropItemFromInventory(itemStack.GetGameplayTag(), itemStack.GetStackCount());
 		}
@@ -116,7 +116,7 @@ void UGCActorInventoryComponent::RemoveAllItemsFromInventory()
 
 	if (heldItems.Num() > 0)
 	{
-		for (const auto itemStack : heldItems)
+		for (const auto& itemStack : heldItems)
 		{
 			RemoveItemFromInventory(itemStack.GetGameplayTag(), itemStack.GetStackCount());
 		}
@@ -136,4 +136,47 @@ bool UGCActorInventoryComponent::IsItemInInventory(FGameplayTag itemTag) const
 float UGCActorInventoryComponent::GetItemStack(FGameplayTag itemTag) const
 {
 	return HeldItemTags.GetStackCount(itemTag);
+}
+
+void UGCActorInventoryComponent::CraftItem(FGameplayTag itemTag)
+{
+	const auto ownerActor = GetOwner();
+
+	if (auto inventorySubsystem = UGCInventoryGISSubsystems::Get(ownerActor))
+	{
+		const auto itemRecipe = inventorySubsystem->GetItemRecipe(itemTag);
+
+		if (IsItemCraftable(itemRecipe))
+		{
+			for (const auto& recipeElement : itemRecipe.RecipeElements)
+			{
+				RemoveItemFromInventory(recipeElement.Key, recipeElement.Value);
+			}
+
+			AddItemToInventory(itemTag, 1.f);
+		}
+	}
+}
+
+bool UGCActorInventoryComponent::IsItemCraftable(FItemRecipeElements recipe)
+{
+	bool bHasMaterials = true;
+
+	if (recipe.RecipeElements.Num() > 0)
+	{
+		for (const auto& recipeElement : recipe.RecipeElements)
+		{
+			if (GetItemStack(recipeElement.Key) < recipeElement.Value)
+			{
+				bHasMaterials = false;
+				break;
+			}
+		}
+	}
+	else
+	{
+		bHasMaterials = false;
+	}
+
+	return bHasMaterials;
 }

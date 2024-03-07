@@ -29,19 +29,23 @@ public:
 	virtual void Deinitialize() override;
 
 	UFUNCTION(BlueprintCallable, Category = InventorySubsystem)
-	FItemKeyInfo GetItemInformationFromTag(FGameplayTag itemTag);
+	FItemKeyInfo GetItemInformationFromTag(const FGameplayTag& itemTag);
 
 	UFUNCTION(BlueprintCallable, Category = InventorySubsystem)
-	void ItemAddedToInventory(FGameplayTag itemTag, float itemStack, AActor* ownerReference);
+	void ItemAddedToInventory(const FGameplayTag& itemTag, const float itemStack, AActor* ownerReference);
 
 	UFUNCTION(BlueprintCallable, Category = InventorySubsystem)
-	void ItemUsedFromInventory(FGameplayTag itemTag, float itemStack, AActor* ownerReference);
+	void ItemUsedFromInventory(const FGameplayTag& itemTag, const float itemStack, AActor* ownerReference);
 
 	UFUNCTION(BlueprintCallable, Category = InventorySubsystem)
-	void ItemDroppedFromInventory(FGameplayTag itemTag, float itemStack, AActor* ownerReference);
+	void ItemDroppedFromInventory(const FGameplayTag& itemTag, const float itemStack, AActor* ownerReference);
 
 	UFUNCTION(BlueprintCallable, Category = InventorySubsystem)
-	void ItemRemovedFromInventory(FGameplayTag itemTag, float itemStack, AActor* ownerReference);
+	void ItemRemovedFromInventory(const FGameplayTag& itemTag, const float itemStack, AActor* ownerReference);
+
+	//~ Crafting related methods
+	UFUNCTION(BlueprintCallable, Category = InventorySubsystem)
+	FItemRecipeElements GetItemRecipe(const FGameplayTag& itemTag);
 
 protected:
 

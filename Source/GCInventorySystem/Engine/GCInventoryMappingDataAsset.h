@@ -2,8 +2,8 @@
 
 #pragma once
 
+#include "Types/InventoryTypes.h"
 #include <Engine/DataAsset.h>
-#include <GameplayTagContainer.h>
 
 #include "GCInventoryMappingDataAsset.generated.h"
 
@@ -20,7 +20,13 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	UDataTable* FindItemsDataTable(const FGameplayTag& categoryTag) const;
 
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	FItemRecipeInfo FindRecipesCategory(const FGameplayTag& categoryTag) const;
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TMap<FGameplayTag, UDataTable*> ItemsCategoryMap;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TMap<FGameplayTag, FItemRecipeInfo> ItemsCategoryCraftingRecipes;
 	
 };

@@ -66,6 +66,16 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "InventoryComponent")
 	float GetItemStack(FGameplayTag itemTag) const;
 
+	//~ Crafting related functions
+
+	// Function called to craft the desired item.
+	UFUNCTION(BlueprintCallable, Category = "InventoryComponent|Crafting")
+	void CraftItem(FGameplayTag itemTag);
+
+	// Function called to craft the desired item.
+	UFUNCTION(BlueprintCallable, Category = "InventoryComponent|Crafting")
+	bool IsItemCraftable(FItemRecipeElements recipe);
+
 public:
 
 	UPROPERTY(BlueprintCallable)

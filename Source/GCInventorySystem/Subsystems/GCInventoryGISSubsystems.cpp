@@ -41,13 +41,13 @@ void UGCInventoryGISSubsystems::Deinitialize()
 	Super::Deinitialize();
 }
 
-void UGCInventoryGISSubsystems::ItemAddedToInventory(FGameplayTag itemTag, float itemStack, AActor* ownerReference)
+void UGCInventoryGISSubsystems::ItemAddedToInventory(const FGameplayTag& itemTag, const float itemStack, AActor* ownerReference)
 {
 	if (ownerReference && ownerReference->GetClass()->ImplementsInterface(UGCInventoryInterface::StaticClass()))
 	{
 		const auto addedItemInfo = GetItemInformationFromTag(itemTag);
 
-		if (const auto& dataAsset = ItemsDataAsset.LoadSynchronous())
+		if (const auto dataAsset = ItemsDataAsset.LoadSynchronous())
 		{
 			if (const auto itemCategory = dataAsset->FindItemsDataTable(addedItemInfo.ItemCategoryTag))
 			{
@@ -67,13 +67,13 @@ void UGCInventoryGISSubsystems::ItemAddedToInventory(FGameplayTag itemTag, float
 	}
 }
 
-void UGCInventoryGISSubsystems::ItemUsedFromInventory(FGameplayTag itemTag, float itemStack, AActor* ownerReference)
+void UGCInventoryGISSubsystems::ItemUsedFromInventory(const FGameplayTag& itemTag, const float itemStack, AActor* ownerReference)
 {
 	if (ownerReference && ownerReference->GetClass()->ImplementsInterface(UGCInventoryInterface::StaticClass()))
 	{
 		const auto usedItemInfo = GetItemInformationFromTag(itemTag);
 
-		if (const auto& dataAsset = ItemsDataAsset.LoadSynchronous())
+		if (const auto dataAsset = ItemsDataAsset.LoadSynchronous())
 		{
 			if (const auto itemCategory = dataAsset->FindItemsDataTable(usedItemInfo.ItemCategoryTag))
 			{
@@ -93,13 +93,13 @@ void UGCInventoryGISSubsystems::ItemUsedFromInventory(FGameplayTag itemTag, floa
 	}
 }
 
-void UGCInventoryGISSubsystems::ItemDroppedFromInventory(FGameplayTag itemTag, float itemStack, AActor* ownerReference)
+void UGCInventoryGISSubsystems::ItemDroppedFromInventory(const FGameplayTag& itemTag, const float itemStack, AActor* ownerReference)
 {
 	if (ownerReference && ownerReference->GetClass()->ImplementsInterface(UGCInventoryInterface::StaticClass()))
 	{
 		const auto usedItemInfo = GetItemInformationFromTag(itemTag);
 
-		if (const auto& dataAsset = ItemsDataAsset.LoadSynchronous())
+		if (const auto dataAsset = ItemsDataAsset.LoadSynchronous())
 		{
 			if (const auto itemCategory = dataAsset->FindItemsDataTable(usedItemInfo.ItemCategoryTag))
 			{
@@ -119,13 +119,13 @@ void UGCInventoryGISSubsystems::ItemDroppedFromInventory(FGameplayTag itemTag, f
 	}
 }
 
-void UGCInventoryGISSubsystems::ItemRemovedFromInventory(FGameplayTag itemTag, float itemStack, AActor* ownerReference)
+void UGCInventoryGISSubsystems::ItemRemovedFromInventory(const FGameplayTag& itemTag, const float itemStack, AActor* ownerReference)
 {
 	if (ownerReference && ownerReference->GetClass()->ImplementsInterface(UGCInventoryInterface::StaticClass()))
 	{
 		const auto usedItemInfo = GetItemInformationFromTag(itemTag);
 
-		if (const auto& dataAsset = ItemsDataAsset.LoadSynchronous())
+		if (const auto dataAsset = ItemsDataAsset.LoadSynchronous())
 		{
 			if (const auto itemCategory = dataAsset->FindItemsDataTable(usedItemInfo.ItemCategoryTag))
 			{
@@ -145,7 +145,25 @@ void UGCInventoryGISSubsystems::ItemRemovedFromInventory(FGameplayTag itemTag, f
 	}
 }
 
-FItemKeyInfo UGCInventoryGISSubsystems::GetItemInformationFromTag(FGameplayTag itemTag)
+FItemRecipeElements UGCInventoryGISSubsystems::GetItemRecipe(const FGameplayTag& itemTag)
+{
+	const auto usedItemInfo = GetItemInformationFromTag(itemTag);
+
+	if (const auto dataAsset = ItemsDataAsset.LoadSynchronous())
+	{
+		const auto itemCategory = dataAsset->FindRecipesCategory(usedItemInfo.ItemCategoryTag);
+
+		return itemCategory.ItemRecipes[itemTag];
+	}
+	else
+	{
+		UE_LOG(LogInventorySystem, Error, TEXT("[%s] Failed to find ItemsDataAsset. Cannot fill the item information."), ANSI_TO_TCHAR(__FUNCTION__));
+	}
+
+	return FItemRecipeElements();
+}
+
+FItemKeyInfo UGCInventoryGISSubsystems::GetItemInformationFromTag(const FGameplayTag& itemTag)
 {
 	if (AllItemsInventory.Contains(itemTag))
 	{
@@ -161,14 +179,14 @@ void UGCInventoryGISSubsystems::InitializeItemsInformation()
 {
 	if (ensureMsgf(ItemsDataAsset.IsValid(), TEXT("Items data asset is not valid, without this file the system won't work. Please Fix it")))
 	{
-		if (const auto& dataAsset = ItemsDataAsset.LoadSynchronous())
+		if (const auto dataAsset = ItemsDataAsset.LoadSynchronous())
 		{
 			TArray<FGameplayTag> itemCategories;
 			dataAsset->ItemsCategoryMap.GetKeys(itemCategories);
 
 			if (itemCategories.Num() > 0)
 			{
-				for (const auto categoryTag : itemCategories)
+				for (const auto& categoryTag : itemCategories)
 				{
 					if (const auto itemCategory = dataAsset->FindItemsDataTable(categoryTag))
 					{
@@ -177,7 +195,7 @@ void UGCInventoryGISSubsystems::InitializeItemsInformation()
 
 						if (tableRowNames.Num() > 0)
 						{
-							for (const auto itemNameTag : tableRowNames)
+							for (const auto& itemNameTag : tableRowNames)
 							{
 								const auto itemTag = FGameplayTag::RequestGameplayTag(itemNameTag);
 								FItemKeyInfo newItemInfo;

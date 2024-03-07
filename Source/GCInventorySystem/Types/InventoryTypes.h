@@ -21,3 +21,25 @@ struct FItemKeyInfo
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
 	FGameplayTag ItemCategoryTag;
 };
+
+USTRUCT(BlueprintType)
+struct FItemRecipeElements
+{
+	GENERATED_BODY()
+
+	FItemRecipeElements() {}
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	TMap<FGameplayTag, float> RecipeElements;
+};
+
+USTRUCT(BlueprintType)
+struct FItemRecipeInfo
+{
+	GENERATED_BODY()
+
+	FItemRecipeInfo() {}
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	TMap<FGameplayTag, FItemRecipeElements> ItemRecipes;
+};
