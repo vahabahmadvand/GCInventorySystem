@@ -16,4 +16,3 @@
    [/Script/GCInventorySystem.GCInventoryGISSubsystems]
    StructDataAsset=/Game/DT_InventoryDataAsset.DT_InventoryDataAsset (***example path***)
    ```
- - 
