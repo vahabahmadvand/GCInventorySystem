@@ -16,7 +16,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnItemRemoved, FGameplayTag, itemN
  *  It covers the basic functions for items and requires that the player implements the GCInventoryInterface,
  *  to apply the desired effects of the Items.
  */
-UCLASS()
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class GCINVENTORYSYSTEM_API UGCPSInventoryComponent : public UPlayerStateComponent
 {
 	GENERATED_BODY()
@@ -42,9 +42,25 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "InventoryComponent")
 	void DropItemFromInventory(FGameplayTag itemTag, float itemStack);
 
+	// Function called to drop a specific stack of items from the inventory
+	UFUNCTION(BlueprintCallable, Category = "InventoryComponent")
+	void DropItemFromInventory(FGameplayTag itemTag, float itemStack);
+
+	// Function called to drop a specific stack of items from the inventory
+	UFUNCTION(BlueprintCallable, Category = "InventoryComponent")
+	void DropAllItemsFromInventory();
+
 	// Function called to remove a specific stack of items from the inventory
 	UFUNCTION(BlueprintCallable, Category = "InventoryComponent")
 	void RemoveItemFromInventory(FGameplayTag itemTag, float itemStack);
+
+	// Function to remove all the items from the inventory making sure that the owner perceives the changes
+	UFUNCTION(BlueprintCallable, Category = "InventoryComponent")
+	void RemoveAllItemsFromInventory();
+
+	// Fast function to remove all elements in the inventory and empty it in a fast way.
+	UFUNCTION(BlueprintCallable, Category = "InventoryComponent")
+	void ClearInventory();
 
 	// Returns true if the input item is in the inventory
 	UFUNCTION(BlueprintCallable, Category = "InventoryComponent")
@@ -71,6 +87,6 @@ protected:
 	UPROPERTY(Replicated)
 	FGameplayTagStackContainer HeldItemTags;
 
-	// 	UPROPERTY(EditDefaultsOnly, Category = "InventoryComponent|Defaults")
-	// 	FGameplayTagStackContainer StartUpItems;
+	UPROPERTY(EditDefaultsOnly, Category = "InventoryComponent|Defaults")
+	TMap<FGameplayTag, float> StartUpItems;
 };

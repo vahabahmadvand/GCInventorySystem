@@ -19,6 +19,16 @@ void FGameplayTagStack::PostReplicatedChange(const struct FGameplayTagStackConta
 	//OnChanged.Broadcast();
 }
 
+FGameplayTag FGameplayTagStack::GetGameplayTag() const
+{
+	return Tag;
+}
+
+float FGameplayTagStack::GetStackCount() const
+{
+	return StackCount;
+}
+
 //////////////////////////////////////////////////////////////////////
 // FGameplayTagStackContainer
 
@@ -95,6 +105,19 @@ void FGameplayTagStackContainer::RemoveStack(FGameplayTag Tag, float StackCount)
 			}
 		}
 	}
+}
+
+void FGameplayTagStackContainer::ClearStack()
+{
+	for (FGameplayTagStack& Stack : Stacks)
+	{
+		RemoveStack(Stack.Tag, Stack.StackCount);
+	}
+}
+
+TArray<FGameplayTagStack> FGameplayTagStackContainer::GetGameplayTagStackList() const
+{
+	return Stacks;
 }
 
 void FGameplayTagStackContainer::PreReplicatedRemove(const TArrayView<int32> RemovedIndices, int32 FinalSize)

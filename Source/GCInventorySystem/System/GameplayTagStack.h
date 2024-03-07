@@ -30,6 +30,10 @@ struct FGameplayTagStack : public FFastArraySerializerItem
 
 	void PostReplicatedChange(const struct FGameplayTagStackContainer& InArraySerializer);
 
+	FGameplayTag GetGameplayTag() const;
+
+	float GetStackCount() const;
+
 	FOnStackItemReplicated OnChanged;
 
 private:
@@ -61,6 +65,11 @@ public:
 
 	// Removes a specified number of stacks from the tag (does nothing if StackCount is below 1)
 	void RemoveStack(FGameplayTag Tag, float StackCount);
+
+	// Removes all the elements in the stack
+	void ClearStack();
+
+	TArray<FGameplayTagStack> GetGameplayTagStackList() const;
 
 	// Returns the stack count of the specified tag (or 0 if the tag is not present)
 	float GetStackCount(FGameplayTag Tag) const

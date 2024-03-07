@@ -8,6 +8,7 @@
 UGCPSInventoryComponent::UGCPSInventoryComponent(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	HeldItemTags = FGameplayTagStackContainer();
+	StartUpItems.Empty();
 
 	SetIsReplicatedByDefault(true);
 }
@@ -15,6 +16,14 @@ UGCPSInventoryComponent::UGCPSInventoryComponent(const FObjectInitializer& Objec
 void UGCPSInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (StartUpItems.Num() > 0)
+	{
+		for (const auto currentItem : StartUpItems)
+		{
+			AddItemToInventory(currentItem.Key, currentItem.Value);
+		}
+	}
 }
 
 void UGCPSInventoryComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -70,6 +79,19 @@ void UGCPSInventoryComponent::DropItemFromInventory(FGameplayTag itemTag, float 
 	}
 }
 
+void UGCPSInventoryComponent::DropAllItemsFromInventory()
+{
+	const auto heldItems = HeldItemTags.GetGameplayTagStackList();
+
+	if (heldItems.Num() > 0)
+	{
+		for (const auto itemStack : heldItems)
+		{
+			DropItemFromInventory(itemStack.GetGameplayTag(), itemStack.GetStackCount());
+		}
+	}
+}
+
 void UGCPSInventoryComponent::RemoveItemFromInventory(FGameplayTag itemTag, float itemStack)
 {
 	const auto ownerPlayer = GetPlayerState<APlayerState>();
@@ -85,6 +107,24 @@ void UGCPSInventoryComponent::RemoveItemFromInventory(FGameplayTag itemTag, floa
 
 		OnItemRemoved.Broadcast(itemTag, ownerPlayer);
 	}
+}
+
+void UGCPSInventoryComponent::RemoveAllItemsFromInventory()
+{
+	const auto heldItems = HeldItemTags.GetGameplayTagStackList();
+
+	if (heldItems.Num() > 0)
+	{
+		for (const auto itemStack : heldItems)
+		{
+			RemoveItemFromInventory(itemStack.GetGameplayTag(), itemStack.GetStackCount());
+		}
+	}
+}
+
+void UGCPSInventoryComponent::ClearInventory()
+{
+	HeldItemTags.ClearStack();
 }
 
 bool UGCPSInventoryComponent::IsItemInInventory(FGameplayTag itemTag) const
