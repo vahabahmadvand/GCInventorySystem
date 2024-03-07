@@ -5,9 +5,9 @@
 #include "GameplayTagContainer.h"
 #include "Net/Serialization/FastArraySerializer.h"
 
-#include "GameplayTagStack.generated.h"
+#include "GCGameplayTagStack.generated.h"
 
-struct FGameplayTagStackContainer;
+struct FGCGameplayTagStackContainer;
 struct FNetDeltaSerializeInfo;
 
 DECLARE_MULTICAST_DELEGATE(FOnStackItemReplicated);
@@ -18,17 +18,17 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FOnStackItemAdded, const FGameplayTag& tag);
  * Represents one stack of a gameplay tag (tag + count)
  */
 USTRUCT(BlueprintType)
-struct FGameplayTagStack : public FFastArraySerializerItem
+struct FGCGameplayTagStack : public FFastArraySerializerItem
 {
 	GENERATED_BODY()
 
-	FGameplayTagStack() {}
+	FGCGameplayTagStack() {}
 
-	FGameplayTagStack(FGameplayTag InTag, float InStackCount) : Tag(InTag), StackCount(InStackCount) {}
+	FGCGameplayTagStack(FGameplayTag InTag, float InStackCount) : Tag(InTag), StackCount(InStackCount) {}
 
 	FString GetDebugString() const;
 
-	void PostReplicatedChange(const struct FGameplayTagStackContainer& InArraySerializer);
+	void PostReplicatedChange(const struct FGCGameplayTagStackContainer& InArraySerializer);
 
 	FGameplayTag GetGameplayTag() const;
 
@@ -38,7 +38,7 @@ struct FGameplayTagStack : public FFastArraySerializerItem
 
 private:
 
-	friend FGameplayTagStackContainer;
+	friend FGCGameplayTagStackContainer;
 
 	UPROPERTY()
 	FGameplayTag Tag;
@@ -49,11 +49,11 @@ private:
 
 /** Container of gameplay tag stacks */
 USTRUCT(BlueprintType)
-struct FGameplayTagStackContainer : public FFastArraySerializer
+struct FGCGameplayTagStackContainer : public FFastArraySerializer
 {
 	GENERATED_BODY()
 
-	FGameplayTagStackContainer()
+	FGCGameplayTagStackContainer()
 		//	: Owner(nullptr)
 	{
 	}
@@ -69,7 +69,7 @@ public:
 	// Removes all the elements in the stack
 	void ClearStack();
 
-	TArray<FGameplayTagStack> GetGameplayTagStackList() const;
+	TArray<FGCGameplayTagStack> GetGameplayTagStackList() const;
 
 	// Returns the stack count of the specified tag (or 0 if the tag is not present)
 	float GetStackCount(FGameplayTag Tag) const
@@ -91,10 +91,10 @@ public:
 
 	bool NetDeltaSerialize(FNetDeltaSerializeInfo& DeltaParms)
 	{
-		return FFastArraySerializer::FastArrayDeltaSerialize<FGameplayTagStack, FGameplayTagStackContainer>(Stacks, DeltaParms, *this);
+		return FFastArraySerializer::FastArrayDeltaSerialize<FGCGameplayTagStack, FGCGameplayTagStackContainer>(Stacks, DeltaParms, *this);
 	}
 
-	FGameplayTagStack* GetTagStackItem(const FGameplayTag& tag);
+	FGCGameplayTagStack* GetTagStackItem(const FGameplayTag& tag);
 
 	void BindDelegateToStackReplicated(const FGameplayTag& tag, const FDynamicOnStackItemReplicated& onStackItemReplicated, const UObject* ownerUObject);
 
@@ -104,14 +104,14 @@ private:
 
 	// Replicated list of gameplay tag stacks
 	UPROPERTY()
-	TArray<FGameplayTagStack> Stacks;
+	TArray<FGCGameplayTagStack> Stacks;
 
 	// Accelerated list of tag stacks for queries
 	TMap<FGameplayTag, float> TagToCountMap;
 };
 
 template<>
-struct TStructOpsTypeTraits<FGameplayTagStackContainer> : public TStructOpsTypeTraitsBase2<FGameplayTagStackContainer>
+struct TStructOpsTypeTraits<FGCGameplayTagStackContainer> : public TStructOpsTypeTraitsBase2<FGCGameplayTagStackContainer>
 {
 	enum
 	{

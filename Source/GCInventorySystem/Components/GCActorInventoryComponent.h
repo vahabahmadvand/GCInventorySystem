@@ -91,7 +91,7 @@ protected:
 
 	// Gameplay tags of the items that the player holds
 	UPROPERTY(Replicated)
-	FGameplayTagStackContainer HeldItemTags;
+	FGCGameplayTagStackContainer HeldItemTags;
 
 	UPROPERTY(EditDefaultsOnly, Category = "InventoryComponent|Defaults")
 	TMap<FGameplayTag, float> StartUpItems;

@@ -6,7 +6,7 @@
 
 UGCActorInventoryComponent::UGCActorInventoryComponent(const FObjectInitializer& ObjectInitializer)
 {
-	HeldItemTags = FGameplayTagStackContainer();
+	HeldItemTags = FGCGameplayTagStackContainer();
 	StartUpItems.Empty();
 
 	SetIsReplicatedByDefault(true);
