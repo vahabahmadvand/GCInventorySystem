@@ -13,7 +13,7 @@ class APlayerState;
 /**
  *
  */
-UCLASS(Config = Game)
+UCLASS(config = Engine, defaultconfig)
 class GCINVENTORYSYSTEM_API UGCInventoryGISSubsystems : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
@@ -55,7 +55,7 @@ protected:
 public:
 
 	/*A data asset which link the fragment type (which is a gameplay tag) with a UScriptStruct.*/
-	UPROPERTY(Config)
+	UPROPERTY(EditAnywhere, config, Category = Settings)
 	TSoftObjectPtr<UGCInventoryMappingDataAsset> ItemsDataAsset;
 
 private:
