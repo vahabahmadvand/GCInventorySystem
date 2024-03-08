@@ -47,6 +47,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = InventorySubsystem)
 	FItemRecipeElements GetItemRecipe(const FGameplayTag& itemTag);
 
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = InventorySubsystem)
+	UGCInventoryMappingDataAsset* GetItemDataAsset();
+
 protected:
 
 	// Function in charge of filling the information for the AllItemsInventory map
