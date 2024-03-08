@@ -28,8 +28,10 @@ public:
 	virtual void Initialize(FSubsystemCollectionBase& collection) override;
 	virtual void Deinitialize() override;
 
+	UDataTable* FindCategoryDataTableForItem(const FGameplayTag& itemTag) const;
+
 	UFUNCTION(BlueprintCallable, Category = InventorySubsystem, meta = (AutoCreateRefTerm = "itemTag"))
-	FItemKeyInfo GetItemKeyInformationFromTag(const FGameplayTag& itemTag);
+	FItemKeyInfo GetItemKeyInformationFromTag(const FGameplayTag& itemTag) const;
 
 	UFUNCTION(BlueprintCallable, CustomThunk, Category = "InventorySubsystem", meta = (CustomStructureParam = "itemData", AutoCreateRefTerm = "itemTag"))
 	bool GetItemFromTag(const FGameplayTag& itemTag, FTableRowBase& itemData);
@@ -45,8 +47,6 @@ protected:
 	void InitializeItemsInformation();
 
 	bool Generic_GetDataTableRowFromName(const UDataTable* Table, FName RowName, void* OutRowPtr);
-
-public:
 
 	/*A data asset which link the fragment type (which is a gameplay tag) with a UScriptStruct.*/
 	UPROPERTY(EditAnywhere, config, Category = Settings)

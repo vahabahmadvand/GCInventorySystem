@@ -86,10 +86,10 @@ DEFINE_FUNCTION(UGCInventoryGISSubsystems::execGetItemFromTag)
 
 FItemRecipeElements UGCInventoryGISSubsystems::GetItemRecipe(const FGameplayTag& itemTag)
 {
-	const auto usedItemInfo = GetItemKeyInformationFromTag(itemTag);
-
 	if (const auto dataAsset = ItemsDataAsset.LoadSynchronous())
 	{
+		const auto usedItemInfo = GetItemKeyInformationFromTag(itemTag);
+
 		const auto itemCategory = dataAsset->FindRecipesCategory(usedItemInfo.ItemCategoryTag);
 
 		return itemCategory.ItemRecipes[itemTag];
@@ -102,7 +102,7 @@ FItemRecipeElements UGCInventoryGISSubsystems::GetItemRecipe(const FGameplayTag&
 	return FItemRecipeElements();
 }
 
-FItemKeyInfo UGCInventoryGISSubsystems::GetItemKeyInformationFromTag(const FGameplayTag& itemTag)
+FItemKeyInfo UGCInventoryGISSubsystems::GetItemKeyInformationFromTag(const FGameplayTag& itemTag) const
 {
 	if (AllItemsInventory.Contains(itemTag))
 	{
@@ -112,6 +112,20 @@ FItemKeyInfo UGCInventoryGISSubsystems::GetItemKeyInformationFromTag(const FGame
 	UE_LOG(LogInventorySystem, Warning, TEXT("[%s] Could not find the item with the tag: %s"), ANSI_TO_TCHAR(__FUNCTION__), *itemTag.ToString());
 
 	return FItemKeyInfo();
+}
+
+UDataTable* UGCInventoryGISSubsystems::FindCategoryDataTableForItem(const FGameplayTag& itemTag) const
+{
+	if (const auto dataAsset = ItemsDataAsset.LoadSynchronous())
+	{
+		const auto usedItemInfo = GetItemKeyInformationFromTag(itemTag);
+
+		const auto itemCategory = dataAsset->FindItemsDataTable(usedItemInfo.ItemCategoryTag);
+
+		return itemCategory;
+	}
+
+	return nullptr;
 }
 
 void UGCInventoryGISSubsystems::InitializeItemsInformation()
