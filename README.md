@@ -11,11 +11,7 @@
  - All the items used in the game should be defined in a data asset that inherits from **UGCInventoryMappingDataAsset**. Here there are two possible maps. One defines all the items in the game separated by categories and the other map holds the recipes for the items that you wish to craft.
  - The ItemsCategoryMap in the **UGCInventoryMappingDataAsset** is a map that holds the reference to all the items in the game. They're separated by category so you can separate your items in different categories for easier management. Each category holds a data table that could be any struct that inherits from **FTableRowBase**. So it should be generic enough for it to be used with any kind of information you need.
  - The only restriction for the data table that holds the item's information is the row name. **The row name should be the gameplay tag used to identify the item.**
- - To set up your inventory data asset you must add these lines inside your DefaultGame.ini. Keep in mind that **StructDataAsset=** asks for the path of the data asset file.
-   ```
-   [/Script/GCInventorySystem.GCInventoryGISSubsystems]
-   StructDataAsset=/Game/DT_InventoryDataAsset.DT_InventoryDataAsset (***example path***)
-   ```
+ - To set up your inventory data asset you must go to project settings in the editor. Go to Plugins/InventorySystem/ and there set the data asset file.
 # Inventory Actor Component
 - This is an actor component that is in charge of holding the inventory of the actor.
 - Check the inventory methods of this class to operate it: AddItemToInventory, UseItemFromInventory, DropItemFromInventory, RemoveItemFromInventory. And some more.
