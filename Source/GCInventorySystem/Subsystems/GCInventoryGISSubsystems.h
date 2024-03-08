@@ -28,27 +28,15 @@ public:
 	virtual void Initialize(FSubsystemCollectionBase& collection) override;
 	virtual void Deinitialize() override;
 
-	UFUNCTION(BlueprintCallable, Category = InventorySubsystem)
+	UFUNCTION(BlueprintCallable, Category = InventorySubsystem, meta = (AutoCreateRefTerm = "itemTag"))
 	FItemKeyInfo GetItemKeyInformationFromTag(const FGameplayTag& itemTag);
-
-	UFUNCTION(BlueprintCallable, Category = InventorySubsystem)
-	void ItemAddedToInventory(const FGameplayTag& itemTag, const float itemStack, AActor* ownerReference);
-
-	UFUNCTION(BlueprintCallable, Category = InventorySubsystem)
-	void ItemUsedFromInventory(const FGameplayTag& itemTag, const float itemStack, AActor* ownerReference);
-
-	UFUNCTION(BlueprintCallable, Category = InventorySubsystem)
-	void ItemDroppedFromInventory(const FGameplayTag& itemTag, const float itemStack, AActor* ownerReference);
-
-	UFUNCTION(BlueprintCallable, Category = InventorySubsystem)
-	void ItemRemovedFromInventory(const FGameplayTag& itemTag, const float itemStack, AActor* ownerReference);
 
 	UFUNCTION(BlueprintCallable, CustomThunk, Category = "InventorySubsystem", meta = (CustomStructureParam = "itemData", AutoCreateRefTerm = "itemTag"))
 	bool GetItemFromTag(const FGameplayTag& itemTag, FTableRowBase& itemData);
 	DECLARE_FUNCTION(execGetItemFromTag);
 
 	//~ Crafting related methods
-	UFUNCTION(BlueprintCallable, Category = InventorySubsystem, meta = (AutoCreateRefTerm = "categoryTag"))
+	UFUNCTION(BlueprintCallable, Category = InventorySubsystem, meta = (AutoCreateRefTerm = "itemTag"))
 	FItemRecipeElements GetItemRecipe(const FGameplayTag& itemTag);
 
 protected:

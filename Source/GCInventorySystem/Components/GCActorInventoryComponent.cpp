@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "GCActorInventoryComponent.h"
+#include "Interfaces/GCInventoryInterface.h"
 #include "Subsystems/GCInventoryGISSubsystems.h"
 #include <Net/UnrealNetwork.h>
 
@@ -38,26 +39,23 @@ void UGCActorInventoryComponent::AddItemToInventory(FGameplayTag itemTag, float 
 {
 	const auto ownerActor = GetOwner();
 
-	HeldItemTags.AddStack(itemTag, itemStack);
-
-	if (auto inventorySubsystem = UGCInventoryGISSubsystems::Get(ownerActor))
+	if (ownerActor && ownerActor->GetClass()->ImplementsInterface(UGCInventoryInterface::StaticClass()))
 	{
-		inventorySubsystem->ItemAddedToInventory(itemTag, itemStack, ownerActor);
-	}
+		HeldItemTags.AddStack(itemTag, itemStack);
 
-	OnItemGranted.Broadcast(itemTag, ownerActor);
+		IGCInventoryInterface::Execute_ItemGranted(ownerActor, itemTag, itemStack);
+
+		OnItemGranted.Broadcast(itemTag, ownerActor);
+	}
 }
 
 void UGCActorInventoryComponent::UseItemFromInventory(FGameplayTag itemTag, float itemStack)
 {
 	const auto ownerActor = GetOwner();
 
-	if (IsItemInInventory(itemTag))
+	if (ownerActor && ownerActor->GetClass()->ImplementsInterface(UGCInventoryInterface::StaticClass()) && IsItemInInventory(itemTag))
 	{
-		if (auto inventorySubsystem = UGCInventoryGISSubsystems::Get(ownerActor))
-		{
-			inventorySubsystem->ItemUsedFromInventory(itemTag, itemStack, ownerActor);
-		}
+		IGCInventoryInterface::Execute_ItemUsed(ownerActor, itemTag, itemStack);
 
 		OnItemUsed.Broadcast(itemTag, ownerActor);
 	}
@@ -67,14 +65,11 @@ void UGCActorInventoryComponent::DropItemFromInventory(FGameplayTag itemTag, flo
 {
 	const auto ownerActor = GetOwner();
 
-	if (IsItemInInventory(itemTag))
+	if (ownerActor && ownerActor->GetClass()->ImplementsInterface(UGCInventoryInterface::StaticClass()) && IsItemInInventory(itemTag))
 	{
 		HeldItemTags.RemoveStack(itemTag, itemStack);
 
-		if (auto inventorySubsystem = UGCInventoryGISSubsystems::Get(ownerActor))
-		{
-			inventorySubsystem->ItemDroppedFromInventory(itemTag, itemStack, ownerActor);
-		}
+		IGCInventoryInterface::Execute_ItemDropped(ownerActor, itemTag, itemStack);
 
 		OnItemRemoved.Broadcast(itemTag, ownerActor);
 	}
@@ -97,14 +92,11 @@ void UGCActorInventoryComponent::RemoveItemFromInventory(FGameplayTag itemTag, f
 {
 	const auto ownerActor = GetOwner();
 
-	if (IsItemInInventory(itemTag))
+	if (ownerActor && ownerActor->GetClass()->ImplementsInterface(UGCInventoryInterface::StaticClass()) && IsItemInInventory(itemTag))
 	{
 		HeldItemTags.RemoveStack(itemTag, itemStack);
 
-		if (auto inventorySubsystem = UGCInventoryGISSubsystems::Get(ownerActor))
-		{
-			inventorySubsystem->ItemRemovedFromInventory(itemTag, itemStack, ownerActor);
-		}
+		IGCInventoryInterface::Execute_ItemRemoved(ownerActor, itemTag, itemStack);
 
 		OnItemRemoved.Broadcast(itemTag, ownerActor);
 	}
