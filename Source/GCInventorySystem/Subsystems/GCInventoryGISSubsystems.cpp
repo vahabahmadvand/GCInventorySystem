@@ -163,6 +163,11 @@ FItemRecipeElements UGCInventoryGISSubsystems::GetItemRecipe(const FGameplayTag&
 	return FItemRecipeElements();
 }
 
+UGCInventoryMappingDataAsset* UGCInventoryGISSubsystems::GetItemDataAsset()
+{
+	return  ItemsDataAsset.LoadSynchronous();
+}
+
 FItemKeyInfo UGCInventoryGISSubsystems::GetItemInformationFromTag(const FGameplayTag& itemTag)
 {
 	if (AllItemsInventory.Contains(itemTag))
