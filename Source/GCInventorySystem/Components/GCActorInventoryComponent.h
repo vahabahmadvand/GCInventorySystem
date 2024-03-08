@@ -7,9 +7,9 @@
 
 #include "GCActorInventoryComponent.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnItemGranted, FGameplayTag, itemName, AActor*, ownerReference);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnItemUsed, FGameplayTag, itemName, AActor*, ownerReference);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnItemRemoved, FGameplayTag, itemName, AActor*, ownerReference);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnItemGranted, FGameplayTag, itemName, float, itemStack, AActor*, ownerReference);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnItemUsed, FGameplayTag, itemName, float, itemStack, AActor*, ownerReference);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnItemRemoved, FGameplayTag, itemName, float, itemStack, AActor*, ownerReference);
 
 /**
  *  Inventory component used to manage the inventory of players during the game.

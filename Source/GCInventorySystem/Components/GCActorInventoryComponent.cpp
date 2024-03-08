@@ -45,7 +45,7 @@ void UGCActorInventoryComponent::AddItemToInventory(FGameplayTag itemTag, float 
 
 		IGCInventoryInterface::Execute_ItemGranted(ownerActor, itemTag, itemStack);
 
-		OnItemGranted.Broadcast(itemTag, ownerActor);
+		OnItemGranted.Broadcast(itemTag, itemStack, ownerActor);
 	}
 }
 
@@ -57,7 +57,7 @@ void UGCActorInventoryComponent::UseItemFromInventory(FGameplayTag itemTag, floa
 	{
 		IGCInventoryInterface::Execute_ItemUsed(ownerActor, itemTag, itemStack);
 
-		OnItemUsed.Broadcast(itemTag, ownerActor);
+		OnItemUsed.Broadcast(itemTag, itemStack, ownerActor);
 	}
 }
 
@@ -71,7 +71,7 @@ void UGCActorInventoryComponent::DropItemFromInventory(FGameplayTag itemTag, flo
 
 		IGCInventoryInterface::Execute_ItemDropped(ownerActor, itemTag, itemStack);
 
-		OnItemRemoved.Broadcast(itemTag, ownerActor);
+		OnItemRemoved.Broadcast(itemTag, itemStack, ownerActor);
 	}
 }
 
@@ -98,7 +98,7 @@ void UGCActorInventoryComponent::RemoveItemFromInventory(FGameplayTag itemTag, f
 
 		IGCInventoryInterface::Execute_ItemRemoved(ownerActor, itemTag, itemStack);
 
-		OnItemRemoved.Broadcast(itemTag, ownerActor);
+		OnItemRemoved.Broadcast(itemTag, itemStack, ownerActor);
 	}
 }
 
