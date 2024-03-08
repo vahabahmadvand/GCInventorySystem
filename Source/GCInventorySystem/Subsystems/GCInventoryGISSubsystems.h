@@ -3,11 +3,11 @@
 #pragma once
 
 #include "Subsystems/GameInstanceSubsystem.h"
+#include "Engine/GCInventoryMappingDataAsset.h"
 #include "Types/InventoryTypes.h"
 
 #include "GCInventoryGISSubsystems.generated.h"
 
-class UGCInventoryMappingDataAsset;
 class APlayerState;
 
 /**
@@ -28,14 +28,29 @@ public:
 	virtual void Initialize(FSubsystemCollectionBase& collection) override;
 	virtual void Deinitialize() override;
 
-	UDataTable* FindCategoryDataTableForItem(const FGameplayTag& itemTag) const;
+	/** Function to find the row of a table given its name. */
+	template <class T>
+	T* GetItemFromTag(const FGameplayTag& itemTag) const
+	{
+		const auto usedItemInfo = GetItemKeyInformationFromTag(itemTag);
+
+		if (const auto dataAsset = ItemsDataAsset.LoadSynchronous())
+		{
+			if (const auto itemCategory = dataAsset->FindItemsDataTable(usedItemInfo.ItemCategoryTag))
+			{
+				return itemCategory->FindRow<T>(FName(*itemTag.ToString()), "");
+			}
+		}
+
+		return nullptr;
+	}
 
 	UFUNCTION(BlueprintCallable, Category = InventorySubsystem, meta = (AutoCreateRefTerm = "itemTag"))
 	FItemKeyInfo GetItemKeyInformationFromTag(const FGameplayTag& itemTag) const;
 
-	UFUNCTION(BlueprintCallable, CustomThunk, Category = "InventorySubsystem", meta = (CustomStructureParam = "itemData", AutoCreateRefTerm = "itemTag"))
-	bool GetItemFromTag(const FGameplayTag& itemTag, FTableRowBase& itemData);
-	DECLARE_FUNCTION(execGetItemFromTag);
+	UFUNCTION(BlueprintCallable, CustomThunk, Category = "InventorySubsystem", meta = (CustomStructureParam = "itemData", AutoCreateRefTerm = "itemTag", DisplayName = "Get Item Struct From Tag"))
+	bool K2_GetItemStrcutFromTag(const FGameplayTag& itemTag, FTableRowBase& itemData);
+	DECLARE_FUNCTION(execK2_GetItemStrcutFromTag);
 
 	//~ Crafting related methods
 	UFUNCTION(BlueprintCallable, Category = InventorySubsystem, meta = (AutoCreateRefTerm = "itemTag"))

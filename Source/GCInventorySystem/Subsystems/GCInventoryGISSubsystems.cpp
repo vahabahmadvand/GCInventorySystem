@@ -2,7 +2,6 @@
 
 #include "GCInventoryGISSubsystems.h"
 #include "Modules/GCInventorySystem.h"
-#include "Engine/GCInventoryMappingDataAsset.h"
 #include <GameFramework/PlayerState.h>
 #include <InstancedStruct.h>
 #include <Kismet/DataTableFunctionLibrary.h>
@@ -40,14 +39,14 @@ void UGCInventoryGISSubsystems::Deinitialize()
 	Super::Deinitialize();
 }
 
-bool UGCInventoryGISSubsystems::GetItemFromTag(const FGameplayTag& itemTag, FTableRowBase& itemData)
+bool UGCInventoryGISSubsystems::K2_GetItemStrcutFromTag(const FGameplayTag& itemTag, FTableRowBase& itemData)
 {
 	// We should never hit this!  stubs to avoid NoExport on the class.
 	check(0);
 	return false;
 }
 
-DEFINE_FUNCTION(UGCInventoryGISSubsystems::execGetItemFromTag)
+DEFINE_FUNCTION(UGCInventoryGISSubsystems::execK2_GetItemStrcutFromTag)
 {
 	P_GET_STRUCT(FGameplayTag, itemTag);
 
@@ -112,20 +111,6 @@ FItemKeyInfo UGCInventoryGISSubsystems::GetItemKeyInformationFromTag(const FGame
 	UE_LOG(LogInventorySystem, Warning, TEXT("[%s] Could not find the item with the tag: %s"), ANSI_TO_TCHAR(__FUNCTION__), *itemTag.ToString());
 
 	return FItemKeyInfo();
-}
-
-UDataTable* UGCInventoryGISSubsystems::FindCategoryDataTableForItem(const FGameplayTag& itemTag) const
-{
-	if (const auto dataAsset = ItemsDataAsset.LoadSynchronous())
-	{
-		const auto usedItemInfo = GetItemKeyInformationFromTag(itemTag);
-
-		const auto itemCategory = dataAsset->FindItemsDataTable(usedItemInfo.ItemCategoryTag);
-
-		return itemCategory;
-	}
-
-	return nullptr;
 }
 
 void UGCInventoryGISSubsystems::InitializeItemsInformation()
