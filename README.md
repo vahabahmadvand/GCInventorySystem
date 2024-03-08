@@ -24,8 +24,8 @@
 
 # Inventory GIS Subsystem
 - This is the class in charge of fetching all the data of your items and store the data assets that you defined.
-- The function **GetItemFromTag** will take as an input a gameplay tag, and it'll return a wildcard strcut which you can break in any struct similar as how you fetch data table information in BPs. Which makes fetching the information in BPs really easy and transversal.
-- To get the item information in C++, right now it's not as easy as it is in BP. But, you have a method called **FindCategoryDataTableForItem**, which will return the data table of the item category for the item you passed over as an input. Then, with the data table you can get the row information using fetching the row from the Data table.
+- The function **Get Item Struct From Tag** will take as an input a gameplay tag, and it'll return a wildcard strcut which you can break in any struct similar as how you fetch data table information in BPs. Which makes fetching the information in BPs really easy and transversal.
+- To get the item information in C++, you could use the **GetItemFromTag** method. Which is a templated method that will return the item struct in the format passed over in the template.
 
 # Crafting teaser
 - There's a little bit of logic for a crafting system in this plugin. It is really basic, and again use it at your own risk.
