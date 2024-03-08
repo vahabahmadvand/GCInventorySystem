@@ -29,7 +29,7 @@ public:
 	virtual void Deinitialize() override;
 
 	UFUNCTION(BlueprintCallable, Category = InventorySubsystem)
-	FItemKeyInfo GetItemInformationFromTag(const FGameplayTag& itemTag);
+	FItemKeyInfo GetItemKeyInformationFromTag(const FGameplayTag& itemTag);
 
 	UFUNCTION(BlueprintCallable, Category = InventorySubsystem)
 	void ItemAddedToInventory(const FGameplayTag& itemTag, const float itemStack, AActor* ownerReference);
@@ -43,17 +43,20 @@ public:
 	UFUNCTION(BlueprintCallable, Category = InventorySubsystem)
 	void ItemRemovedFromInventory(const FGameplayTag& itemTag, const float itemStack, AActor* ownerReference);
 
-	//~ Crafting related methods
-	UFUNCTION(BlueprintCallable, Category = InventorySubsystem)
-	FItemRecipeElements GetItemRecipe(const FGameplayTag& itemTag);
+	UFUNCTION(BlueprintCallable, CustomThunk, Category = "InventorySubsystem", meta = (CustomStructureParam = "itemData", AutoCreateRefTerm = "itemTag"))
+	bool GetItemFromTag(const FGameplayTag& itemTag, FTableRowBase& itemData);
+	DECLARE_FUNCTION(execGetItemFromTag);
 
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = InventorySubsystem)
-	UGCInventoryMappingDataAsset* GetItemDataAsset();
+	//~ Crafting related methods
+	UFUNCTION(BlueprintCallable, Category = InventorySubsystem, meta = (AutoCreateRefTerm = "categoryTag"))
+	FItemRecipeElements GetItemRecipe(const FGameplayTag& itemTag);
 
 protected:
 
 	// Function in charge of filling the information for the AllItemsInventory map
 	void InitializeItemsInformation();
+
+	bool Generic_GetDataTableRowFromName(const UDataTable* Table, FName RowName, void* OutRowPtr);
 
 public:
 

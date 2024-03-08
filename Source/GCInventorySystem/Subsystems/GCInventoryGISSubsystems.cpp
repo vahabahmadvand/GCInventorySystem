@@ -45,7 +45,7 @@ void UGCInventoryGISSubsystems::ItemAddedToInventory(const FGameplayTag& itemTag
 {
 	if (ownerReference && ownerReference->GetClass()->ImplementsInterface(UGCInventoryInterface::StaticClass()))
 	{
-		const auto addedItemInfo = GetItemInformationFromTag(itemTag);
+		const auto addedItemInfo = GetItemKeyInformationFromTag(itemTag);
 
 		if (const auto dataAsset = ItemsDataAsset.LoadSynchronous())
 		{
@@ -53,7 +53,8 @@ void UGCInventoryGISSubsystems::ItemAddedToInventory(const FGameplayTag& itemTag
 			{
 				FTableRowBase outRow;
 				UDataTableFunctionLibrary::GetDataTableRowFromName(itemCategory, FName(*itemTag.ToString()), outRow);
-				IGCInventoryInterface::Execute_ItemGranted(ownerReference, outRow, itemStack);
+
+				IGCInventoryInterface::Execute_ItemGranted(ownerReference, itemTag, itemStack);
 			}
 			else
 			{
@@ -71,7 +72,7 @@ void UGCInventoryGISSubsystems::ItemUsedFromInventory(const FGameplayTag& itemTa
 {
 	if (ownerReference && ownerReference->GetClass()->ImplementsInterface(UGCInventoryInterface::StaticClass()))
 	{
-		const auto usedItemInfo = GetItemInformationFromTag(itemTag);
+		const auto usedItemInfo = GetItemKeyInformationFromTag(itemTag);
 
 		if (const auto dataAsset = ItemsDataAsset.LoadSynchronous())
 		{
@@ -79,7 +80,7 @@ void UGCInventoryGISSubsystems::ItemUsedFromInventory(const FGameplayTag& itemTa
 			{
 				FTableRowBase outRow;
 				UDataTableFunctionLibrary::GetDataTableRowFromName(itemCategory, FName(*itemTag.ToString()), outRow);
-				IGCInventoryInterface::Execute_ItemUsed(ownerReference, outRow, itemStack);
+				IGCInventoryInterface::Execute_ItemUsed(ownerReference, itemTag, itemStack);
 			}
 			else
 			{
@@ -97,7 +98,7 @@ void UGCInventoryGISSubsystems::ItemDroppedFromInventory(const FGameplayTag& ite
 {
 	if (ownerReference && ownerReference->GetClass()->ImplementsInterface(UGCInventoryInterface::StaticClass()))
 	{
-		const auto usedItemInfo = GetItemInformationFromTag(itemTag);
+		const auto usedItemInfo = GetItemKeyInformationFromTag(itemTag);
 
 		if (const auto dataAsset = ItemsDataAsset.LoadSynchronous())
 		{
@@ -105,7 +106,7 @@ void UGCInventoryGISSubsystems::ItemDroppedFromInventory(const FGameplayTag& ite
 			{
 				FTableRowBase outRow;
 				UDataTableFunctionLibrary::GetDataTableRowFromName(itemCategory, FName(*itemTag.ToString()), outRow);
-				IGCInventoryInterface::Execute_ItemDropped(ownerReference, outRow, itemStack);
+				IGCInventoryInterface::Execute_ItemDropped(ownerReference, itemTag, itemStack);
 			}
 			else
 			{
@@ -123,7 +124,7 @@ void UGCInventoryGISSubsystems::ItemRemovedFromInventory(const FGameplayTag& ite
 {
 	if (ownerReference && ownerReference->GetClass()->ImplementsInterface(UGCInventoryInterface::StaticClass()))
 	{
-		const auto usedItemInfo = GetItemInformationFromTag(itemTag);
+		const auto usedItemInfo = GetItemKeyInformationFromTag(itemTag);
 
 		if (const auto dataAsset = ItemsDataAsset.LoadSynchronous())
 		{
@@ -131,7 +132,7 @@ void UGCInventoryGISSubsystems::ItemRemovedFromInventory(const FGameplayTag& ite
 			{
 				FTableRowBase outRow;
 				UDataTableFunctionLibrary::GetDataTableRowFromName(itemCategory, FName(*itemTag.ToString()), outRow);
-				IGCInventoryInterface::Execute_ItemRemoved(ownerReference, outRow, itemStack);
+				IGCInventoryInterface::Execute_ItemRemoved(ownerReference, itemTag, itemStack);
 			}
 			else
 			{
@@ -145,9 +146,53 @@ void UGCInventoryGISSubsystems::ItemRemovedFromInventory(const FGameplayTag& ite
 	}
 }
 
+bool UGCInventoryGISSubsystems::GetItemFromTag(const FGameplayTag& itemTag, FTableRowBase& itemData)
+{
+	// We should never hit this!  stubs to avoid NoExport on the class.
+	check(0);
+	return false;
+}
+
+DEFINE_FUNCTION(UGCInventoryGISSubsystems::execGetItemFromTag)
+{
+	P_GET_STRUCT(FGameplayTag, itemTag);
+
+	Stack.StepCompiledIn<FStructProperty>(NULL);
+	void* itemData = Stack.MostRecentPropertyAddress;
+
+	P_FINISH;
+	bool bSuccess = false;
+
+	FStructProperty* StructProp = CastField<FStructProperty>(Stack.MostRecentProperty);
+
+	const auto usedItemInfo = P_THIS->GetItemKeyInformationFromTag(itemTag);
+
+	if (const auto dataAsset = P_THIS->ItemsDataAsset.LoadSynchronous())
+	{
+		if (const auto itemCategory = dataAsset->FindItemsDataTable(usedItemInfo.ItemCategoryTag))
+		{
+			if (StructProp && itemData)
+			{
+				UScriptStruct* OutputType = StructProp->Struct;
+				const UScriptStruct* TableType = itemCategory->GetRowStruct();
+
+				const bool bCompatible = (OutputType == TableType) ||
+					(OutputType->IsChildOf(TableType) && FStructUtils::TheSameLayout(OutputType, TableType));
+				if (bCompatible)
+				{
+					P_NATIVE_BEGIN;
+					bSuccess = P_THIS->Generic_GetDataTableRowFromName(itemCategory, FName(*itemTag.ToString()), itemData);
+					P_NATIVE_END;
+				}
+				*(bool*)RESULT_PARAM = bSuccess;
+			}
+		}
+	}
+}
+
 FItemRecipeElements UGCInventoryGISSubsystems::GetItemRecipe(const FGameplayTag& itemTag)
 {
-	const auto usedItemInfo = GetItemInformationFromTag(itemTag);
+	const auto usedItemInfo = GetItemKeyInformationFromTag(itemTag);
 
 	if (const auto dataAsset = ItemsDataAsset.LoadSynchronous())
 	{
@@ -163,12 +208,7 @@ FItemRecipeElements UGCInventoryGISSubsystems::GetItemRecipe(const FGameplayTag&
 	return FItemRecipeElements();
 }
 
-UGCInventoryMappingDataAsset* UGCInventoryGISSubsystems::GetItemDataAsset()
-{
-	return  ItemsDataAsset.LoadSynchronous();
-}
-
-FItemKeyInfo UGCInventoryGISSubsystems::GetItemInformationFromTag(const FGameplayTag& itemTag)
+FItemKeyInfo UGCInventoryGISSubsystems::GetItemKeyInformationFromTag(const FGameplayTag& itemTag)
 {
 	if (AllItemsInventory.Contains(itemTag))
 	{
@@ -234,4 +274,27 @@ void UGCInventoryGISSubsystems::InitializeItemsInformation()
 	{
 		UE_LOG(LogInventorySystem, Error, TEXT("[%s] Item Data asset reference is not valid"), ANSI_TO_TCHAR(__FUNCTION__));
 	}
+}
+
+bool UGCInventoryGISSubsystems::Generic_GetDataTableRowFromName(const UDataTable* Table, FName RowName, void* OutRowPtr)
+{
+	bool bFoundRow = false;
+
+	if (OutRowPtr && Table)
+	{
+		void* RowPtr = Table->FindRowUnchecked(RowName);
+
+		if (RowPtr != nullptr)
+		{
+			const UScriptStruct* StructType = Table->GetRowStruct();
+
+			if (StructType != nullptr)
+			{
+				StructType->CopyScriptStruct(OutRowPtr, RowPtr);
+				bFoundRow = true;
+			}
+		}
+	}
+
+	return bFoundRow;
 }
