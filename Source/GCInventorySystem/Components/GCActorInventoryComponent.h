@@ -78,13 +78,13 @@ public:
 
 public:
 
-	UPROPERTY(BlueprintCallable)
+	UPROPERTY(BlueprintAssignable)
 	FOnItemGranted OnItemGranted;
 
-	UPROPERTY(BlueprintCallable)
+	UPROPERTY(BlueprintAssignable)
 	FOnItemUsed OnItemUsed;
 
-	UPROPERTY(BlueprintCallable)
+	UPROPERTY(BlueprintAssignable)
 	FOnItemRemoved OnItemRemoved;
 
 protected:
