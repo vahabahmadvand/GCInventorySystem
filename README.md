@@ -21,8 +21,11 @@
 
 # Inventory Interface
 - The **GCInventoryInterface** class should be implemented in the actor that holds the inventory component. The reason is that this class possesses some methods to extend the functionality of the inventory as needed.
-- When you operate items in your inventory component you operate using only gameplay tags. But internally the **UGCInventoryGISSubsystems** will return to the interface of the item holder all the item information from the data table.
-- In the end, you'll receive a data table that you can cast to your struct and get all the information that you need from there and implement the logic you need.
+
+# Inventory GIS Subsystem
+- This is the class in charge of fetching all the data of your items and store the data assets that you defined.
+- The function **GetItemFromTag** will take as an input a gameplay tag, and it'll return a wildcard strcut which you can break in any struct similar as how you fetch data table information in BPs. Which makes fetching the information in BPs really easy and transversal.
+- To get the item information in C++, right now it's not as easy as it is in BP. But, you have a method called **FindCategoryDataTableForItem**, which will return the data table of the item category for the item you passed over as an input. Then, with the data table you can get the row information using fetching the row from the Data table.
 
 # Crafting teaser
 - There's a little bit of logic for a crafting system in this plugin. It is really basic, and again use it at your own risk.
