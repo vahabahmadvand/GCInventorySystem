@@ -17,10 +17,10 @@ class GCINVENTORYSYSTEM_API UGCInventoryMappingDataAsset : public UPrimaryDataAs
 
 public:
 
-	UFUNCTION(BlueprintCallable, BlueprintPure)
+	UFUNCTION(BlueprintCallable, BlueprintPure, meta=(AutoCreateRefTerm="categoryTag"))
 	UDataTable* FindItemsDataTable(const FGameplayTag& categoryTag) const;
 
-	UFUNCTION(BlueprintCallable, BlueprintPure)
+	UFUNCTION(BlueprintCallable, BlueprintPure, meta = (AutoCreateRefTerm = "categoryTag"))
 	FItemRecipeInfo FindRecipesCategory(const FGameplayTag& categoryTag) const;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
