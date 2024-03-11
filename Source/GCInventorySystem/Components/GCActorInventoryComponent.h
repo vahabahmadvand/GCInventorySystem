@@ -78,6 +78,10 @@ public:
 
 	// Function called to craft the desired item.
 	UFUNCTION(BlueprintCallable, Category = "InventoryComponent|Crafting")
+	bool CanItemBeCrafted(FGameplayTag itemTag);
+
+protected:
+
 	bool IsItemCraftable(FItemRecipeElements recipe);
 
 public:

@@ -167,6 +167,20 @@ void UGCActorInventoryComponent::CraftItem(FGameplayTag itemTag)
 	}
 }
 
+bool UGCActorInventoryComponent::CanItemBeCrafted(FGameplayTag itemTag)
+{
+	const auto ownerActor = GetOwner();
+
+	if (auto inventorySubsystem = UGCInventoryGISSubsystems::Get(ownerActor))
+	{
+		const auto itemRecipe = inventorySubsystem->GetItemRecipe(itemTag);
+
+		return IsItemCraftable(itemRecipe);
+	}
+
+	return false;
+}
+
 bool UGCActorInventoryComponent::IsItemCraftable(FItemRecipeElements recipe)
 {
 	bool bHasMaterials = true;
