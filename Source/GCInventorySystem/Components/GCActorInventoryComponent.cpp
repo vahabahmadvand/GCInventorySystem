@@ -130,6 +130,23 @@ float UGCActorInventoryComponent::GetItemStack(FGameplayTag itemTag) const
 	return HeldItemTags.GetStackCount(itemTag);
 }
 
+TMap<FGameplayTag, float> UGCActorInventoryComponent::GetAllItemsOnInventory() const
+{
+	TMap<FGameplayTag, float> currentItemsMap;
+
+	const auto currentItemsArray = HeldItemTags.GetGameplayTagStackList();
+
+	if (currentItemsArray.Num() > 0)
+	{
+		for (const auto& itemStack : currentItemsArray)
+		{
+			currentItemsMap.Add(itemStack.GetGameplayTag(), itemStack.GetStackCount());
+		}
+	}
+
+	return currentItemsMap;
+}
+
 void UGCActorInventoryComponent::CraftItem(FGameplayTag itemTag)
 {
 	const auto ownerActor = GetOwner();

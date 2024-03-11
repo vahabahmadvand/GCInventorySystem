@@ -66,6 +66,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "InventoryComponent")
 	float GetItemStack(FGameplayTag itemTag) const;
 
+	// Returns the current stack of the input item from the inventory. 0 if the player doesn't have the item.
+	UFUNCTION(BlueprintCallable, Category = "InventoryComponent")
+	TMap<FGameplayTag, float> GetAllItemsOnInventory() const;
+
 	//~ Crafting related functions
 
 	// Function called to craft the desired item.
