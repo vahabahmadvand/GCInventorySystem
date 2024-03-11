@@ -6,6 +6,7 @@
 #include <InstancedStruct.h>
 #include <Kismet/DataTableFunctionLibrary.h>
 #include <Engine/DataTable.h>
+#include <Kismet/KismetSystemLibrary.h>
 
 UGCInventoryGISSubsystems::UGCInventoryGISSubsystems()
 {
@@ -115,7 +116,7 @@ FItemKeyInfo UGCInventoryGISSubsystems::GetItemKeyInformationFromTag(const FGame
 
 void UGCInventoryGISSubsystems::InitializeItemsInformation()
 {
-	if (ensureMsgf(ItemsDataAsset.IsValid(), TEXT("Items data asset is not valid, without this file the system won't work. Please Fix it")))
+	if (ensureMsgf(UKismetSystemLibrary::IsValidSoftObjectReference(ItemsDataAsset), TEXT("Items data asset is not valid, without this file the system won't work. Please Fix it")))
 	{
 		if (const auto dataAsset = ItemsDataAsset.LoadSynchronous())
 		{
