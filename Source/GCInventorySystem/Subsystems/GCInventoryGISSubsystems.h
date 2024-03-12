@@ -13,7 +13,7 @@ class APlayerState;
 /**
  *
  */
-UCLASS(config = Engine, defaultconfig)
+UCLASS(config = Game, defaultconfig)
 class GCINVENTORYSYSTEM_API UGCInventoryGISSubsystems : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
